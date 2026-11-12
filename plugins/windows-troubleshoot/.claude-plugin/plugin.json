@@ -1,0 +1,9 @@
+{
+  "name": "windows-troubleshoot",
+  "version": "1.0.0",
+  "description": "Diagnose Windows 10/11 and Windows Server problems with Microsoft TSS: map a symptom to the right TSS scenario and exact command, run a read-only health triage, and turn a collected TSS / MS_DATA zip into plain-English findings.",
+  "author": { "name": "SharkByte561", "url": "https://github.com/SharkByte561" },
+  "repository": "https://github.com/SharkByte561/windows-troubleshoot",
+  "license": "MIT",
+  "keywords": ["windows", "troubleshooting", "tss", "powershell", "diagnostics"]
+}

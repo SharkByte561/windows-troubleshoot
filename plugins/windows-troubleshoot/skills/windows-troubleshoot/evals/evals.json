@@ -1,0 +1,77 @@
+{
+  "skill_name": "windows-troubleshoot",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Users in our Finance OU keep getting locked out every morning around 9am, AD domain contoso.local, DCs are DC01 and DC02. What data should I collect with Microsoft TSS, where do I run it, and what exactly will it change on the box? Give me the exact commands.",
+      "expected_output": "Recommends ADS_AccountLockout(Ex) on the DC with exact command, prerequisites, audit-policy warning, WaitEvent 4740, and a cheap 4740 caller check first.",
+      "files": null,
+      "assertions": [
+        "Recommends the ADS_AccountLockout (or ADS_AccountLockoutEx) TSS scenario",
+        "Says to run it on the domain controller(s) (DC01/DC02, ideally PDC emulator or the DC logging 4740)",
+        "Gives an exact .\\TSS.ps1 command line",
+        "Warns that audit policy subcategories are set to No Auditing at stop / not restored, and suggests backing up audit policy (auditpol /backup or /get) first",
+        "Says the Security log is resized to 100 MB and that this size is not restored at stop",
+        "Suggests an auto-stop trigger on event 4740 (-WaitEvent Evt:4740) or timing the capture around 9am",
+        "Includes a cheap first check: read event 4740 Caller Computer Name on the PDC before tracing",
+        "States prerequisites: elevated console, process-scope execution policy (not machine-wide)",
+        "Checks or mentions the TSS copy's version/expiry (90-day limit) before the run",
+        "Orders the plan from read-only checks to setting-changing collection, labelling which steps change the DC"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "My PC has felt sluggish the last few days and a couple of apps crashed. Can you check what's going on? Don't change anything on the machine, just look.",
+      "expected_output": "Read-only triage of the local machine with concrete evidence, noise vs signal, no changes, next step.",
+      "files": null,
+      "assertions": [
+        "Actually inspected this machine (ran commands; answer cites concrete values such as event IDs, counts, timestamps)",
+        "Names the specific apps that crashed, with faulting module or event evidence",
+        "Reports CPU/memory/disk state with numbers",
+        "Identifies the single largest sustained CPU consumer by process name, with its CPU share as evidence",
+        "Connects crashes or slowness to storage/disk events (e.g. disk 157, Ntfs 50/140, in-page errors) when such events exist on the machine",
+        "Reports a pending reboot if one exists on the machine",
+        "Reports Windows Update failures if present, separately from Store app 0x80073D02 failures",
+        "Distinguishes likely background noise (e.g. DCOM 10010, Store 0x80073D02) from real signal",
+        "Made no changes to the machine (notes.md confirms read-only commands only)",
+        "Gives a concrete next step"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Microsoft support had me collect a TSS trace for DNS problems and I have the zip here: C:\\Support\\TSS_WS01_261107-101500_NET_DNScli.zip . What's in it, what does it say the problem is, and is there anything I should remove before I upload it?",
+      "expected_output": "Offline analysis: xray NRPT, DNS 1014, 0x8007232b, collection gap, sensitive NetTrace, noise.",
+      "files": "fixtures/TSS_WS01_261107-101500_NET_DNScli.zip",
+      "assertions": [
+        "Analyzed the zip without running anything from it and without modifying it",
+        "Reports the xray finding about local vs domain NRPT rules (KB4562541)",
+        "Treats the xray NRPT finding as a hypothesis and checks or questions it against the machine's actual configuration",
+        "Reports the DNS name resolution timeout event (DNS-Client 1014)",
+        "Reports the error code 0x8007232b (DNS name does not exist) from the text logs",
+        "Reports the UDP/TCP port exhaustion events (Tcpip 4266/4231/4227) as a lead",
+        "Notes the TSS collection warning that the DNS-Client operational log export failed (access denied) as a data gap",
+        "Notes that NetTrace.etl is empty (a few bytes), so no packet capture is available",
+        "Identifies the event logs as containing personal data (e-mail addresses, user names) before upload",
+        "Does not reproduce personal data (e-mail addresses, SIDs, serial numbers) verbatim in the answer",
+        "Identifies unrelated background noise (e.g. DCOM, BitLocker, Store app 0x80073D02, OpenSSH) as not DNS-related"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "We keep a TSS copy on our IT toolkit share that someone downloaded in early August. I'm about to use it on a file server tomorrow. Will it still run? If it complains it's too old, can I just force it to run anyway? And can you check whether there's a newer TSS out right now - don't download or install anything yet, just tell me.",
+      "expected_output": "Explains the 90-day expiry from the build date, says an early-August build has expired by now, names -noExpire as the built-in override with its trade-offs, does not suggest patching the version date, checks the published version online without downloading the package, and gives a verified update path.",
+      "files": null,
+      "assertions": [
+        "States that TSS refuses to run once its build date is more than 90 days old",
+        "Concludes that an early-August 2026 build is expired (or expires within days) as of now (November 2026)",
+        "Names the built-in -noExpire switch as the way to force it to run",
+        "Explains the trade-off of forcing an old copy (outdated scenarios/xray checks, Microsoft support may ask for a recollection with the current version)",
+        "Explicitly warns against editing TssVerDate / patching TSS.ps1 because it breaks the Microsoft signature",
+        "Mentions -noUpdate (or the online-check Y/N prompt that times out) for a server without internet",
+        "Checked the currently published TSS version online and reports it (2026.11.02.0)",
+        "Did not download the full TSS.zip or install anything (notes.md shows only a version check)",
+        "Gives an update path that verifies against the hash Microsoft publishes (aka.ms/getTSSHash) or the Authenticode signature"
+      ]
+    }
+  ]
+}

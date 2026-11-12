@@ -1,0 +1,16 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "windows-troubleshoot",
+  "description": "Windows troubleshooting skill built on Microsoft's TroubleShootingScript toolset (TSS).",
+  "owner": { "name": "SharkByte561", "url": "https://github.com/SharkByte561" },
+  "plugins": [
+    {
+      "name": "windows-troubleshoot",
+      "description": "Diagnose Windows 10/11 and Windows Server problems with Microsoft TSS: map a symptom to the right TSS scenario and exact command, run a read-only health triage, and turn a collected TSS / MS_DATA zip into plain-English findings.",
+      "version": "1.0.0",
+      "author": { "name": "SharkByte561", "url": "https://github.com/SharkByte561" },
+      "category": "Developer Tools",
+      "source": "./plugins/windows-troubleshoot"
+    }
+  ]
+}
